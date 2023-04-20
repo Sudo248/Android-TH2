@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="0dp"
+        android:layout_height="?actionBarSize"
+        android:text="Singer info"
+        android:gravity="center"
+        android:background="@color/teal_200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/imgSinger"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        android:src="@drawable/img_singer"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/txtNameSinger"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/imgSinger"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingVertical="10dp"
+        android:text="Singer: Rose"
+        android:layout_marginHorizontal="10dp"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/txtDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/txtNameSinger"
+        android:lines="10"
+        android:textSize="18sp"
+        android:text="Thong tin san pham am nhac\n\nBai hat 1\nBai hat 2"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
