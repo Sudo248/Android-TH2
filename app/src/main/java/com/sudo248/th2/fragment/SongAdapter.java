@@ -74,7 +74,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
 
         public void onBind(Song song) {
             txtSongName.setText("Name song: " + song.getSongName());
-            txtSingerName.setText("Singer: " + song.getSinger().getSingerName());
+            txtSingerName.setText("Singer: " + song.getSinger());
             txtAlbum.setText("Album: " + song.getAlbum());
             txtType.setText("Type: " + song.getType());
             if (song.isLike()) {

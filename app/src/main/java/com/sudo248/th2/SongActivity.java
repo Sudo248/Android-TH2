@@ -3,7 +3,6 @@ package com.sudo248.th2;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,12 +16,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.sudo248.th2.model.Singer;
 import com.sudo248.th2.model.Song;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class SongActivity extends AppCompatActivity {
 
@@ -67,7 +63,7 @@ public class SongActivity extends AppCompatActivity {
     private void viewUpdate() {
         txtTitle.setText("Update Song");
         edtNameSong.setText(song.getSongName());
-        edtNameSinger.setText(song.getSinger().getSingerName());
+        edtNameSinger.setText(song.getSinger());
         btnDelete.setVisibility(View.VISIBLE);
         btnSave.setText("Update");
         isLike = song.isLike();
@@ -82,14 +78,10 @@ public class SongActivity extends AppCompatActivity {
         });
 
         btnSave.setOnClickListener((v) -> {
-
-            Singer singer = getSinger();
-            if (singer == null) return;
-
             song.setSongName(edtNameSong.getText().toString());
             song.setAlbum(Consts.ALBUMS[currentSelectedItemAlbum]);
             song.setType(Consts.TYPES[currentSelectedItemType]);
-            song.setSinger(singer);
+            song.setSinger(edtNameSinger.getText().toString());
             song.setLike(isLike);
             database.updateSong(song);
             Log.d("Sudoo", "viewUpdate: " + currentSelectedItemAlbum + " " + song.getAlbum());
@@ -103,37 +95,15 @@ public class SongActivity extends AppCompatActivity {
         spinnerAlbum.setSelection(0);
         btnSave.setOnClickListener((v) -> {
             song = new Song();
-
-            Singer singer = getSinger();
-            if (singer == null) return;
-
             song.setSongName(edtNameSong.getText().toString());
             song.setAlbum(spinnerAlbum.getAdapter().getItem(currentSelectedItemAlbum).toString());
             song.setType(spinnerType.getAdapter().getItem(currentSelectedItemType).toString());
-            song.setSinger(singer);
+            song.setSinger(edtNameSinger.getText().toString());
             song.setLike(isLike);
 
             database.insertSong(song);
             onBackPressed();
         });
-    }
-
-    private Singer getSinger() {
-        String singerName = edtNameSinger.getText().toString();
-        Singer singer = database.searchSingerByName(singerName);
-        if (singer == null) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Error")
-                    .setMessage("Không tìm thấy ca sĩ " + singerName)
-                    .setPositiveButton("OK", (dialogInterface, i) -> {
-                        dialogInterface.dismiss();
-                    })
-                    .create()
-                    .show();
-            return null;
-        } else {
-            return singer;
-        }
     }
 
     private void setupImageIsLike() {

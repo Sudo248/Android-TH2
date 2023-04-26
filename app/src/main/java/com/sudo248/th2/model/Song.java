@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Song implements Serializable {
     private int songId;
     private String songName;
-    private Singer singer;
+    private String singer;
     private String album;
     private String type;
     private boolean isLike;
@@ -13,15 +13,7 @@ public class Song implements Serializable {
     public Song() {
     }
 
-    public Song(String songName, Singer singer, String album, String type, boolean isLike) {
-        this.songName = songName;
-        this.singer = singer;
-        this.album = album;
-        this.type = type;
-        this.isLike = isLike;
-    }
-
-    public Song(int songId, String songName, Singer singer, String album, String type, boolean isLike) {
+    public Song(int songId, String songName, String singer, String album, String type, boolean isLike) {
         this.songId = songId;
         this.songName = songName;
         this.singer = singer;
@@ -46,11 +38,11 @@ public class Song implements Serializable {
         this.songName = songName;
     }
 
-    public Singer getSinger() {
+    public String getSinger() {
         return singer;
     }
 
-    public void setSinger(Singer singer) {
+    public void setSinger(String singer) {
         this.singer = singer;
     }
 

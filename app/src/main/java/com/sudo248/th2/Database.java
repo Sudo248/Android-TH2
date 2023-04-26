@@ -9,12 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.sudo248.th2.model.Singer;
 import com.sudo248.th2.model.Song;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Database extends SQLiteOpenHelper {
@@ -28,22 +26,13 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "create table singers (" +
-                "singerId integer primary key autoincrement," +
-                "singerName text," +
-                "image integer," +
-                "songInfo text)";
-
-        db.execSQL(sql);
-
-        sql = "create table songs (" +
+        String sql = "create table songs (" +
                 "songId integer primary key autoincrement," +
                 "songName text," +
-                "singerId integer," +
+                "singer text," +
                 "album text," +
                 "type text," +
-                "isLike integer," +
-                "foreign key(singerId) references singers(singerId))";
+                "isLike integer)";
         db.execSQL(sql);
     }
 
@@ -52,30 +41,9 @@ public class Database extends SQLiteOpenHelper {
 
     }
 
-    public void insertSinger(Singer singer) {
-        String sql = "insert into singers (singerName, image, songInfo) values (?,?,?)";
-        String[] args = {singer.getSingerName(), String.valueOf(singer.getImage()), singer.getSongInfo()};
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL(sql, args);
-        db.close();
-    }
-
-    public Singer searchSingerByName(String singerName) {
-        String sql = "select * from singers where singerName like ? limit 1";
-        String[] args = {"%"+singerName+"%"};
-        Singer singer = null;
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(sql, args);
-        while ((cursor != null) && cursor.moveToNext()) {
-            singer = new Singer(cursor.getInt(0), cursor.getString(1), cursor.getInt(2), cursor.getString(3));
-        }
-        db.close();
-        return singer;
-    }
-
     public void insertSong(Song song) {
-        String sql = "insert into songs(songName,singerId,album,type,isLike) values (?,?,?,?,?)";
-        String[] args = {song.getSongName(), String.valueOf(song.getSinger().getSingerId()), song.getAlbum(), song.getType(), String.valueOf(song.isLike())};
+        String sql = "insert into songs(songName,singer,album,type,isLike) values (?,?,?,?,?)";
+        String[] args = {song.getSongName(), String.valueOf(song.getSinger()), song.getAlbum(), song.getType(), String.valueOf(song.isLike())};
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(sql, args);
         db.close();
@@ -91,7 +59,7 @@ public class Database extends SQLiteOpenHelper {
     public int updateSong(Song song) {
         ContentValues values=new ContentValues();
         values.put("songName", song.getSongName());
-        values.put("singerId", song.getSinger().getSingerId());
+        values.put("singer", song.getSinger());
         values.put("album", song.getAlbum());
         values.put("type", song.getType());
         values.put("isLike", song.isLike());
@@ -101,22 +69,9 @@ public class Database extends SQLiteOpenHelper {
         return db.update("songs",values,where,agrs);
     }
 
-    public List<Singer> getAllSinger() {
-        List<Singer> result = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query("singers", null, null, null, null, null, null);
-        while ((cursor != null) && cursor.moveToNext()) {
-            result.add(new Singer(cursor.getInt(0), cursor.getString(1), cursor.getInt(2), cursor.getString(3)));
-        }
-        db.close();
-        return result;
-    }
-
     public ArrayList<Song> getAllSong() {
         ArrayList<Song> result = new ArrayList<>();
-        String sql = "select songs.songId, songs.songName, songs.album, songs.type, songs.isLike, singers.singerId, singers.singerName, singers.image, singers.songInfo " +
-                "from singers inner join songs " +
-                "on singers.singerId = songs.singerId";
+        String sql = "select * from songs";
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, null);
@@ -124,15 +79,10 @@ public class Database extends SQLiteOpenHelper {
             result.add(new Song(
                     cursor.getInt(0),
                     cursor.getString(1),
-                    new Singer(
-                            cursor.getInt(5),
-                            cursor.getString(6),
-                            cursor.getInt(7),
-                            cursor.getString(8)
-                    ),
                     cursor.getString(2),
                     cursor.getString(3),
-                    cursor.getInt(4) == 1
+                    cursor.getString(4),
+                    cursor.getInt(5) == 1
             ));
         }
         db.close();
@@ -141,9 +91,7 @@ public class Database extends SQLiteOpenHelper {
 
     public ArrayList<Song> searchSongByAlbum(String album) {
         ArrayList<Song> result = new ArrayList<>();
-        String sql = "select songs.songId, songs.songName, songs.album, songs.type, songs.isLike, singers.singerId, singers.singerName, singers.image, singers.songInfo " +
-                "from singers inner join songs " +
-                "on singers.singerId = songs.singerId where songs.album=?";
+        String sql = "select * from songs where songs.album=?";
 
         SQLiteDatabase db = getReadableDatabase();
         String[] args = {album};
@@ -153,15 +101,10 @@ public class Database extends SQLiteOpenHelper {
             result.add(new Song(
                     cursor.getInt(0),
                     cursor.getString(1),
-                    new Singer(
-                            cursor.getInt(5),
-                            cursor.getString(6),
-                            cursor.getInt(7),
-                            cursor.getString(8)
-                    ),
                     cursor.getString(2),
                     cursor.getString(3),
-                    cursor.getInt(4) == 1
+                    cursor.getString(4),
+                    cursor.getInt(5) == 1
             ));
         }
         db.close();
@@ -189,6 +132,4 @@ public class Database extends SQLiteOpenHelper {
         }
         return result;
     }
-
-//    public List<>
 }
